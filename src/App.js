@@ -31,21 +31,33 @@ function App() {
   const [weather, setWeather] = useState('');
   const [temp, setTemp] = useState('273.15');
   const [localTime, setLocalTime] = useState('');
+  const [error, setError] = useState(''); // Add error state
 
   let tempC = convertKelvinToCelsius(temp);
   let tempF = convertKelvinToFahrenheit(temp);
   
   const getWeather = () => {
+    setError(''); // Reset error before fetching
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${input}&appid=${process.env.REACT_APP_API_KEY}`)
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('City not found or API error');
+        }
+        return response.json();
+      })
       .then(data => {
         console.log(data);
         setCityName(data.name);
         setWeather(data.weather[0].main);
         setTemp(data.main.temp);
         setLocalTime(convertOffsetToLocalTime(data.timezone));
+        weatherDiv.removeAttribute('hidden');
+      })
+      .catch(err => {
+        setError(err.message);
+        weatherDiv.setAttribute('hidden', true);
       });
-    weatherDiv.removeAttribute('hidden');
+      
   }
 
   return (
@@ -54,6 +66,7 @@ function App() {
         <h1>Weather App</h1>
         <input id="city" type="text" placeholder="City" onChange={(e) => setInput(e.target.value)} />
         <button id="get-weather" type='submit' onClick={getWeather}>Get Weather</button>
+        {error && <p style={{color: 'red'}}>{error}</p>}
         <div id='weather-infos' hidden>
           <p className="city-name">City: {cityName}</p>
           <p className="weather">Weather: {weather}</p>
