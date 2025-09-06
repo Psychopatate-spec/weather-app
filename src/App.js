@@ -4,7 +4,6 @@ import './App.css';
 // import images as variables
 import clearSkyImg from './assets/Clear Sky.png';
 import fewCloudsImg from './assets/Few Clouds.png';
-import scatteredCloudsImg from './assets/Scattered Clouds.png';
 import brokenCloudsImg from './assets/Broken Clouds.png';
 import rainImg from './assets/Rain.png';
 import thunderstormImg from './assets/Thunderstorm.png';
@@ -56,7 +55,7 @@ function App() {
       })
       .then(data => {
         setCityName(data.name);
-        setWeather((data.weather[0].description).charAt(0).toUpperCase() + (data.weather[0].description).slice(1).toLowerCase());
+        setWeather(data.weather[0].main);
         setTemp(data.main.temp);
         setLocalTime(convertOffsetToLocalTime(data.timezone));
         setShowWeather(true); // show weather info
@@ -69,39 +68,53 @@ function App() {
 
   const getWeatherImage = () => {
     switch (weather) {
-      case 'Clear sky': return clearSkyImg;
-      case 'Few clouds': return fewCloudsImg;
-      case 'Scattered clouds': return scatteredCloudsImg;
+      case 'Clear': return clearSkyImg;
+      case 'Clouds': return fewCloudsImg;
+      case 'Squall':
       case 'Broken clouds': return brokenCloudsImg;
       case 'Rain':
+      case 'Drizzle':
       case 'Shower rain': return rainImg;
+      case 'Tornado':
       case 'Thunderstorm': return thunderstormImg;
+      case 'Smoke':
+      case 'Haze':
+      case 'Dust':
+      case 'Fog':
+      case 'Sand':
       case 'Mist': return mistImg;
       case 'Snow': return snowImg;
-      default: return null;
+      default: return clearSkyImg;
     }
   };
 
   return (
     <div className="App">
-      <section id="weather-app">
+      <section>
         <div id='background'>
           {/* Show image based on weather */}
           {getWeatherImage() && <img src={getWeatherImage()} alt={weather} />}
         </div>
-        <h1>Weather App</h1>
-        <input id="city" type="text" placeholder="Enter a city's name here" onChange={(e) => setInput(e.target.value)} />
-        <button id="get-weather" type='submit' onClick={getWeather}>Get Weather</button>
-        {error && <p style={{color: 'red'}}>{error}</p>}
-        {showWeather && (
-          <div id='weather-infos'>
-            <p className="city-name">City: {cityName}</p>
-            <p className="weather">Weather: {weather}</p>
-            <p className='temp'>Temperature (degree Celcius): {tempC}°C</p>
-            <p className='temp'>Temperature (degree Fahrenheit): {tempF}°F</p>
-            <p className="local-time">Local Time: {localTime}</p>
-          </div>
-        )}
+        <div id="weather-app">
+          <nav>
+            <ul>
+              <li><h1>Weather App</h1></li>
+              <li><p className='temp'>{tempC}°C</p></li>
+              <li><p className='temp'>{tempF}°F</p></li>
+            </ul>
+          </nav>
+          <input id="city" type="text" placeholder="Enter a city's name here" onChange={(e) => setInput(e.target.value)} />
+          <br />
+          <button id="get-weather" type='submit' onClick={getWeather}>Get Weather</button>
+          {error && <p style={{color: 'red'}}>{error}</p>}
+          {showWeather && (
+            <div id='weather-infos'>
+              <p className="city-name">City: {cityName}</p>
+              <p className="weather">Weather: {weather}</p>
+              <p className="local-time">Local Time: {localTime}</p>
+            </div>
+          )}
+        </div>
       </section>
     </div>
   );

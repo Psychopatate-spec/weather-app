@@ -1,6 +1,16 @@
+:root {
+  --blue-color: rgb(168, 238, 255);
+  --dark-blue-color: rgb(128, 197, 214);
+  --light-blue-color: rgb(228, 255, 246);
+  --yellow-color: rgb(214, 208, 116);
+  --dark-yellow-color: rgb(188, 182, 90);
+}
+
 body, html {
   height: 100%;
   margin: 0;
+  font-family: "Pixelify Sans", sans-serif;
+  color: white;
 }
 
 .App {
@@ -10,7 +20,7 @@ body, html {
   align-items: center;
 }
 
-#weather-app {
+section {
   height: 80vh;
   width: 60vw;
   margin: 50px auto;
@@ -19,5 +29,63 @@ body, html {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: aquamarine;
+}
+
+#weather-app {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#background img{
+  height: 80vh;
+  object-fit: cover;
+  z-index: -1;
+  border: solid 10px var(--blue-color);
+  border-radius: 10px;
+}
+
+ul {
+  display: inline;
+  list-style-type: none;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+nav li {
+  display: inline-block;
+  margin: 0 10px;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 48px;
+}
+
+.temp {
+  font-size: 40px;
+  font-weight: bold;
+}
+
+input {
+  font-family: "Pixelify Sans", sans-serif;
+  background-color: var(--blue-color);
+  border: solid 10px var(--dark-blue-color);
+  border-radius: 10px;
+  color: white;
+}
+
+button {
+  font-family: "Pixelify Sans", sans-serif;
+  background-color: var(--yellow-color);
+  border: solid 10px var(--dark-yellow-color);
+  border-radius: 10px;
+  color: white;
+}
+button:hover {
+  border: solid 10px var(--yellow-color);
+  cursor: pointer;
 }
