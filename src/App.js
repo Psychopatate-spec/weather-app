@@ -1,3 +1,5 @@
+/*************************************************************************************************************************/
+  // Imports
 import React, { useState } from 'react';
 import './App.css';
 
@@ -9,6 +11,11 @@ import rainImg from './assets/Rain.png';
 import thunderstormImg from './assets/Thunderstorm.png';
 import mistImg from './assets/Mist.png';
 import snowImg from './assets/Snow.png';
+
+
+/*************************************************************************************************************************/
+  // Functions for basic conversions
+
 
 function convertOffsetToLocalTime(offsetInSeconds) {
   const offsetInHours = Math.floor(offsetInSeconds / 3600) - 1;
@@ -28,6 +35,13 @@ function convertKelvinToFahrenheit(kelvin) {
   return Math.floor((kelvin - 273.15) * 9/5 + 32);
 }
 
+
+
+/*************************************************************************************************************************/
+  // Variables and Functions for the weather App
+
+
+
 function App() {
 
   // input value of city
@@ -37,6 +51,8 @@ function App() {
   const [weather, setWeather] = useState('');
   const [temp, setTemp] = useState(273.15); // default to number
   const [localTime, setLocalTime] = useState('');
+  const [query, setQuery] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
   const [error, setError] = useState('');
 
   let tempC = convertKelvinToCelsius(temp);
@@ -60,6 +76,27 @@ function App() {
         setError(err.message);
       });
   }
+
+  const fetchCities = async (search) => {
+    if (search.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+    try {
+      const res = await fetch(
+        `https://api.openweathermap.org/geo/1.0/direct?q=${search}&limit=5&appid=${process.env.REACT_APP_API_KEY}`
+      );
+      const data = await res.json();
+      if (data.length === 0) {
+        setSuggestions([{name: 'No results', country: ''}]);
+      } else {
+        setSuggestions(data);
+      }
+    } catch (err) {
+      console.error("Error fetching cities:", err);
+      setSuggestions([{ name: "Error fetching cities", country: "" }]);
+    }
+  };
 
   // Return a message string instead of setting state
   const getWeatherMessage = () => {
@@ -111,6 +148,13 @@ function App() {
     }
   };
 
+
+
+/*************************************************************************************************************************/
+  // Return the JSX code
+
+
+
   return (
     <div className="App">
       <section>
@@ -122,7 +166,28 @@ function App() {
               <li><p className='temp'>{tempF}°F</p></li>
             </ul>
           </nav>
-          <input id="city" type="text" placeholder="Enter a city's name here... " onChange={(e) => setInput(e.target.value)} />
+          <input 
+            id="city" 
+            type="text" 
+            list='cities'
+            value={query}
+            placeholder="Enter a city's name here... " 
+            onChange={(e) => {
+              setInput(e.target.value);
+              setQuery(e.target.value);
+              fetchCities(e.target.value);
+            }} 
+          />
+          <datalist id="cities">
+            {suggestions.map((city, index) => (
+              <option
+                key={index}
+                value={`${city.name}, ${city.country}${
+                  city.state ? " (" + city.state + ")" : ""
+                }`}
+              />
+            ))}
+          </datalist>
           <br />
           <button id="get-weather" type='submit' onClick={getWeather}>Get Weather</button>
           {error && <p style={{color: 'red'}}>{error}</p>}
