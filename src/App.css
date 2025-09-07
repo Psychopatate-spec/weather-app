@@ -17,7 +17,6 @@ body, html {
   text-align: center;
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
 section {
@@ -32,13 +31,33 @@ section {
 }
 
 #weather-app {
+  object-fit: cover;
+  top: 0;
+  left: 0;
+  width: 40vw;
+  min-width: 400px;
+  height: 80vh;
+}
+
+nav {
+  background-color: rgba(168, 238, 255, 0.5); /* var(--blue-color); but with 50% opacity */
+  margin-top: clamp(15px, 2vh, 30px);
+  object-fit: cover;
+  border: solid var(--dark-blue-color);
+  border-width: 0 0 10px 0;
+  border-radius: 0 0 50px 50px;
+}
+
+#background img{
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
-
-#background img{
+  width: 40vw;
+  min-width: 400px;
   height: 80vh;
   object-fit: cover;
   z-index: -1;
@@ -47,15 +66,17 @@ section {
 }
 
 ul {
-  display: inline;
+  display: grid;
+  grid-template-columns: 3fr 1fr 1fr;
   list-style-type: none;
   justify-content: center;
   align-items: center;
   margin: 0;
+  padding: 0;
 }
 nav li {
   display: inline-block;
-  margin: 0 10px;
+  margin: 0;
   border: none;
   border-radius: 5px;
   text-align: center;
@@ -63,11 +84,18 @@ nav li {
 
 h1 {
   font-size: 48px;
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
 }
 
 .temp {
   font-size: 40px;
   font-weight: bold;
+  margin: 0 10px;
+  background-color: var(--dark-blue-color);
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5);
 }
 
 input {
@@ -76,6 +104,14 @@ input {
   border: solid 10px var(--dark-blue-color);
   border-radius: 10px;
   color: white;
+  margin: 15px;
+  padding: 10px 20px;
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+input::placeholder {
+  color: white;
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
 }
 
 button {
@@ -84,8 +120,25 @@ button {
   border: solid 10px var(--dark-yellow-color);
   border-radius: 10px;
   color: white;
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5);
 }
 button:hover {
   border: solid 10px var(--yellow-color);
   cursor: pointer;
+  box-shadow: 0 0;
+  transform: translate(4px, 4px);
+  transition: transform 1ms ease-in-out;
+}
+
+#weather-infos p {
+  font-size: 36px;
+  font-weight: bold;
+  margin: 0 50px;
+  margin-top: 160px;
+  background-color: var(--blue-color);
+  border: 10px solid var(--dark-blue-color);
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
 }
