@@ -34,12 +34,10 @@ function App() {
   const [input, setInput] = useState('');
 
   // fetched values
-  const [cityName, setCityName] = useState('');
   const [weather, setWeather] = useState('');
-  const [temp, setTemp] = useState('273.15');
+  const [temp, setTemp] = useState(273.15); // default to number
   const [localTime, setLocalTime] = useState('');
   const [error, setError] = useState('');
-  const [showWeather, setShowWeather] = useState(false); // control visibility
 
   let tempC = convertKelvinToCelsius(temp);
   let tempF = convertKelvinToFahrenheit(temp);
@@ -54,16 +52,39 @@ function App() {
         return response.json();
       })
       .then(data => {
-        setCityName(data.name);
         setWeather(data.weather[0].main);
         setTemp(data.main.temp);
         setLocalTime(convertOffsetToLocalTime(data.timezone));
-        setShowWeather(true); // show weather info
       })
       .catch(err => {
         setError(err.message);
-        setShowWeather(false); // hide weather info
       });
+  }
+
+  // Return a message string instead of setting state
+  const getWeatherMessage = () => {
+    if (error === 'City not found or API error') {
+      return "Never heard about it!";
+    } else if (weather === 'Clouds') {
+      return "It's cloudy outside!";
+    } else if (weather === 'Squall' || weather === 'Broken clouds' || weather === 'Broken Clouds') {
+      return "The sky is gray today...";
+    } else if (weather === 'Rain' || weather === 'Drizzle' || weather === 'Shower rain' || weather === 'Shower Rain') {
+      return "It's raining outside!";
+    } else if (weather === 'Tornado' || weather === 'Thunderstorm') {
+      return "It's stormy outside!";
+    } else if (
+      weather === 'Smoke' || weather === 'Haze' || weather === 'Dust' ||
+      weather === 'Fog' || weather === 'Sand' || weather === 'Mist'
+    ) {
+      return "It's foggy outside!";
+    } else if (weather === 'Snow') {
+      return "It's snowing outside!";
+    } else if (weather === 'Clear') {
+      return "It's crystal clear outside!";
+    } else {
+      return "How may I help you?";
+    }
   }
 
   const getWeatherImage = () => {
@@ -71,10 +92,12 @@ function App() {
       case 'Clear': return clearSkyImg;
       case 'Clouds': return fewCloudsImg;
       case 'Squall':
-      case 'Broken clouds': return brokenCloudsImg;
+      case 'Broken clouds':
+      case 'Broken Clouds': return brokenCloudsImg;
       case 'Rain':
       case 'Drizzle':
-      case 'Shower rain': return rainImg;
+      case 'Shower rain':
+      case 'Shower Rain': return rainImg;
       case 'Tornado':
       case 'Thunderstorm': return thunderstormImg;
       case 'Smoke':
@@ -91,10 +114,6 @@ function App() {
   return (
     <div className="App">
       <section>
-        <div id='background'>
-          {/* Show image based on weather */}
-          {getWeatherImage() && <img src={getWeatherImage()} alt={weather} />}
-        </div>
         <div id="weather-app">
           <nav>
             <ul>
@@ -103,17 +122,20 @@ function App() {
               <li><p className='temp'>{tempF}°F</p></li>
             </ul>
           </nav>
-          <input id="city" type="text" placeholder="Enter a city's name here" onChange={(e) => setInput(e.target.value)} />
+          <input id="city" type="text" placeholder="Enter a city's name here... " onChange={(e) => setInput(e.target.value)} />
           <br />
           <button id="get-weather" type='submit' onClick={getWeather}>Get Weather</button>
           {error && <p style={{color: 'red'}}>{error}</p>}
-          {showWeather && (
+          {
             <div id='weather-infos'>
-              <p className="city-name">City: {cityName}</p>
-              <p className="weather">Weather: {weather}</p>
-              <p className="local-time">Local Time: {localTime}</p>
+              <p className="weather-message">{getWeatherMessage()}</p>
+              {/*<p className="local-time">Local Time: {localTime}</p>*/}
             </div>
-          )}
+          }
+        </div>
+        <div id='background'>
+          {/* Show image based on weather */}
+          {getWeatherImage() && <img src={getWeatherImage()} alt={weather} />}
         </div>
       </section>
     </div>
