@@ -1,9 +1,12 @@
 /*************************************************************************************************************************/
   // Imports
+
+
 import React, { useState } from 'react';
 import './App.css';
+import Speechbubble from './Speechbubble.jsx';
 
-// import images as variables
+// import images and sfx as variables
 import clearSkyImg from './assets/Clear Sky.png';
 import fewCloudsImg from './assets/Few Clouds.png';
 import brokenCloudsImg from './assets/Broken Clouds.png';
@@ -11,6 +14,14 @@ import rainImg from './assets/Rain.png';
 import thunderstormImg from './assets/Thunderstorm.png';
 import mistImg from './assets/Mist.png';
 import snowImg from './assets/Snow.png';
+import calcifer from './assets/Calcifer.png';
+import sunglasses from './assets/Sunglasses.png';
+import keyboardClickSound from './assets/sfx/keyboard-click.mp3';
+import mouseClickSound from './assets/sfx/mouse-click.mp3';
+
+// Initialize audio elements
+const keyboardClick = new Audio(keyboardClickSound);
+const mouseClick = new Audio(mouseClickSound);
 
 
 /*************************************************************************************************************************/
@@ -49,17 +60,26 @@ function App() {
 
   // fetched values
   const [weather, setWeather] = useState('');
-  const [temp, setTemp] = useState(273.15); // default to number
+  const [temp, setTemp] = useState(293.15); // default to number
   const [localTime, setLocalTime] = useState('');
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [error, setError] = useState('');
+  const [calciferMessage, setCalciferMessage] = useState('');
+  const [isBubbleVisible, setIsBubbleVisible] = useState(false);
+  const [error, setError] = useState(' ');
 
   let tempC = convertKelvinToCelsius(temp);
   let tempF = convertKelvinToFahrenheit(temp);
+
   
   const getWeather = () => {
+    // Reset and play the click sound
+    mouseClick.currentTime = 0;
+    mouseClick.play().catch(e => console.log('Audio play failed:', e));
     setError('');
+    // Hide bubble before making the API call
+    setIsBubbleVisible(false);
+    
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${input}&appid=${process.env.REACT_APP_API_KEY}`)
       .then(response => {
         if (!response.ok) {
@@ -71,9 +91,18 @@ function App() {
         setWeather(data.weather[0].main);
         setTemp(data.main.temp);
         setLocalTime(convertOffsetToLocalTime(data.timezone));
+        // Small delay to ensure state updates before showing bubble
+        setTimeout(() => {
+          getCalciferMessage();
+        }, 100);
       })
       .catch(err => {
         setError(err.message);
+        // Show error message in bubble
+        setTimeout(() => {
+          setCalciferMessage("Hein ? Where is it ?");
+          setIsBubbleVisible(true);
+        }, 100);
       });
   }
 
@@ -122,6 +151,45 @@ function App() {
     } else {
       return "How may I help you?";
     }
+  }
+
+  const getCalciferMessage = () => {
+    const randomInt = Math.floor(Math.random() * 2);
+    let message = "";
+    
+    if (error === 'City not found or API error') {
+      message = "Hein ? Where is it ?";
+    } else if (weather === 'Clear') {
+      if (temp > 293.15) {
+        message = randomInt === 0 
+          ? "Take off your sunglasses and your shirt!" 
+          : "Perfect beach weather, don't you think?";
+      } else {
+        message = randomInt === 0 
+          ? "Perfect weather for a walk!" 
+          : "Ahhh... I'm feeling great in this clear weather!";
+      }
+    } else if (temp > 293.15) {
+      message = randomInt === 0 
+        ? "Wouhou ! Take off your shirts !" 
+        : "It's so hot, I'm burning up!";
+    } else if (temp < 273.15) {
+      message = randomInt === 0 
+        ? "Brr... It's freezing cold !" 
+        : "I wish I could wear a scarf...";
+    } else if (temp <= 283.15) {
+      message = randomInt === 0 
+        ? "It's kinda cold no ?" 
+        : "I'm shivering !";
+    } else {
+      // Default message for any other case
+      message = randomInt === 0 
+        ? "The weather is interesting today!" 
+        : "What a day for some weather!";
+    }
+    
+    setCalciferMessage(message);
+    setIsBubbleVisible(true);
   }
 
   const getWeatherImage = () => {
@@ -173,6 +241,9 @@ function App() {
             value={query}
             placeholder="Enter a city's name here... " 
             onChange={(e) => {
+              // Reset and play the keyboard click sound
+              keyboardClick.currentTime = 0;
+              keyboardClick.play().catch(e => console.log('Audio play failed:', e));
               setInput(e.target.value);
               setQuery(e.target.value);
               fetchCities(e.target.value);
@@ -190,13 +261,17 @@ function App() {
           </datalist>
           <br />
           <button id="get-weather" type='submit' onClick={getWeather}>Get Weather</button>
-          {error && <p style={{color: 'red'}}>{error}</p>}
-          {
+          {error && <p id="error">{error}</p>}
+            <div id="calcifer">
+              <img id="calcifer-img" src={calcifer} alt='Calcifer' />
+              {/* Show sunglasses if it's clear and above 20 degrees */}
+              {(weather === 'Clear' && tempC >= 20) && <img id="sunglasses-img" src={sunglasses} alt='Sunglasses' />}
+              <Speechbubble text={calciferMessage} visible={isBubbleVisible}/>
+            </div>
             <div id='weather-infos'>
               <p className="weather-message">{getWeatherMessage()}</p>
               {/*<p className="local-time">Local Time: {localTime}</p>*/}
             </div>
-          }
         </div>
         <div id='background'>
           {/* Show image based on weather */}

@@ -1,0 +1,58 @@
+.speech-bubble {
+  display: inline-block;
+  position: relative;
+  padding: 12px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 12px;
+  color: #000;
+  max-width: 220px;
+  line-height: 1.2;
+  margin: 10px 0;
+  opacity: 0;
+  background:
+    url("assets/bubbles/TL.png") top left no-repeat,
+    url("assets/bubbles/TR.png") top right no-repeat,
+    url("assets/bubbles/BL.png") bottom left no-repeat,
+    url("assets/bubbles/BR.png") bottom right no-repeat,
+    url("assets/bubbles/T.png") top repeat-x,
+    url("assets/bubbles/B.png") bottom repeat-x,
+    url("assets/bubbles/L.png") left repeat-y,
+    url("assets/bubbles/R.png") right repeat-y,
+    url("assets/bubbles/C.png") center repeat;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.speech-bubble.fade-in {
+  animation: fadeIn 0.5s forwards;
+}
+
+.speech-bubble.fade-out {
+  animation: fadeOut 0.5s forwards;
+}
+
+.speech-bubble span {
+  margin: 0;
+  padding: 0;
+}
+
+.speech-bubble .tail {
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 16px;
+  background: url("assets/bubbles/Tail.png") no-repeat center;
+  image-rendering: pixelated;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}

@@ -4,6 +4,8 @@
   --light-blue-color: rgb(228, 255, 246);
   --yellow-color: rgb(214, 208, 116);
   --dark-yellow-color: rgb(188, 182, 90);
+  --brown-color: rgb(105, 67, 46);
+  --light-brown-color: rgb(159, 93, 45);
 }
 
 body, html {
@@ -31,6 +33,7 @@ section {
 }
 
 #weather-app {
+  position: relative;
   object-fit: cover;
   top: 0;
   left: 0;
@@ -46,6 +49,12 @@ nav {
   border: solid var(--dark-blue-color);
   border-width: 0 0 10px 0;
   border-radius: 0 0 50px 50px;
+  height: 17vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 #background img{
@@ -60,9 +69,21 @@ nav {
   min-width: 400px;
   height: 80vh;
   object-fit: cover;
-  z-index: -1;
   border: solid 10px var(--blue-color);
   border-radius: 10px;
+  z-index: -2;
+}
+
+#calcifer img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -70%);
+  width: 14vw;
+  object-fit: cover;
 }
 
 ul {
@@ -104,7 +125,7 @@ input {
   border: solid 10px var(--dark-blue-color);
   border-radius: 10px;
   color: white;
-  margin: 15px;
+  margin: 5px;
   padding: 10px 40px;
   font-size: 24px;
   box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5);
@@ -121,27 +142,47 @@ button {
   border: solid 10px var(--dark-yellow-color);
   border-radius: 10px;
   color: white;
-  margin: 15px;
+  margin: 5px;
   padding: 5px 20px;
   font-size: 20px;
-  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5);
+  box-shadow: 2px 2px 0 var(--dark-yellow-color);
+  transform: translate(2px, 2px);
 }
 button:hover {
   cursor: pointer;
-  box-shadow: 0 0;
+  box-shadow: 4px 4px 0 var(--dark-yellow-color);
+  transform: translate(0, 0);
+}
+button:active {
+  cursor: pointer;
+  box-shadow: none;
   transform: translate(4px, 4px);
-  transition: transform 1ms ease-in-out;
 }
 
 #weather-infos p {
+  position: relative;
+  font-family: "Pixelify Sans", sans-serif;
   font-size: 32px;
   font-weight: bold;
   margin: 0 50px;
-  margin-top: 80px;
-  background-color: var(--blue-color);
-  border: 10px solid var(--dark-blue-color);
+  margin-top: 160px;
+  background-color: var(--brown-color);
+  border: 10px solid var(--light-brown-color);
   border-radius: 10px;
   padding: 10px;
   box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5);
   text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+
+#error {
+  position: fixed;
+  top: 45.5%;
+  left: 50%;
+  transform: translate(-50%, -45.5%);
+  color: red;
+}
+
+.speech-bubble {
+  margin: 10px;
 }
