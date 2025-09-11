@@ -229,7 +229,7 @@ function App() {
         <div id="weather-app">
           <nav>
             <ul>
-              <li><h1>Weather App</h1></li>
+              <li><h1>Warm Winds</h1></li>
               <li><p className='temp'>{tempC}°C</p></li>
               <li><p className='temp'>{tempF}°F</p></li>
             </ul>
