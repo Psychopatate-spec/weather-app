@@ -2,7 +2,7 @@
   // Imports
 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import Speechbubble from './Speechbubble.jsx';
 
@@ -67,11 +67,92 @@ function App() {
   const [calciferMessage, setCalciferMessage] = useState('');
   const [isBubbleVisible, setIsBubbleVisible] = useState(false);
   const [error, setError] = useState(' ');
+  const [triggerMessageUpdate, setTriggerMessageUpdate] = useState(false);
 
+  // Easter egg effect
+  useEffect(() => {
+    const isCalcifer = input.trim().toLowerCase() === 'calcifer';
+    
+    if (isCalcifer) {
+      setCalciferMessage("Hey! That's me! 🔥");
+      setIsBubbleVisible(true);
+      
+      // Hide the message after 3 seconds
+      const timer = setTimeout(() => {
+        setIsBubbleVisible(false);
+      }, 3000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [input]);
+  
   let tempC = convertKelvinToCelsius(temp);
   let tempF = convertKelvinToFahrenheit(temp);
-
   
+  // Check if we should show the sunglasses (either for hot weather or Easter egg)
+  const showSunglasses = (weather === 'Clear' && tempC >= 20) || 
+                        input.trim().toLowerCase() === 'calcifer';
+
+  // This effect runs when weather or temp changes
+  useEffect(() => {
+    if (triggerMessageUpdate) {
+      const randomInt = Math.floor(Math.random() * 2);
+      let message = '';
+      
+      if (weather === 'Rain' || weather === 'Drizzle' || weather === 'Shower rain') {
+        message = randomInt === 0 
+          ? "Rain?! Keep it away!" 
+          : "One drop, and I'm gone!";
+      } else if (weather === 'Thunderstorm' || weather === 'Tornado') {
+        message = randomInt === 0 
+          ? "Boom! I'm louder than thunder!" 
+          : "Storm's wild, but I'm hotter!";
+      } else if (weather === 'Clouds' || weather === 'Broken clouds' || weather === 'Overcast clouds') {
+        message = randomInt === 0 
+          ? "Hey, don't block my glow!" 
+          : "Clouds make me look cooler.";
+      } else if (weather === 'Snow') {
+        message = randomInt === 0 
+          ? "Snowflakes? My fiery enemies!" 
+          : "Too cold… hug me, please.";
+      } else if (weather === 'Fog' || weather === 'Mist' || weather === 'Haze') {
+        message = randomInt === 0 
+          ? "Where'd everyone go?!" 
+          : "Fog's stealing my spotlight!";
+      } else if (weather === 'Clear') {
+        if (temp > 293.15) {
+          message = randomInt === 0 
+            ? "Take off your sunglasses!" 
+            : "Shiny day, shiny flame!";
+        } else {
+          message = randomInt === 0 
+            ? "Clear skies, clear flames!" 
+            : "Stars sparkle, but nah, I'd win!";
+        }
+      } else if (temp > 293.15) {
+        message = randomInt === 0 
+          ? "Wouhou! Take off your shirts!" 
+          : "It's so hot, I'm burning up!";
+      } else if (temp < 273.15) {
+        message = randomInt === 0 
+          ? "Brr... It's freezing cold!" 
+          : "I wish I could wear a scarf...";
+      } else if (temp <= 283.15) {
+        message = randomInt === 0 
+          ? "It's kinda cold no?" 
+          : "I'm shivering!";
+      } else {
+        message = randomInt === 0 
+          ? "The weather is interesting today!" 
+          : "What a day for some weather!";
+      }
+      
+      setCalciferMessage(message);
+      setIsBubbleVisible(true);
+      setTriggerMessageUpdate(false);
+    }
+  }, [weather, temp, triggerMessageUpdate]);
+
   const getWeather = () => {
     // Reset and play the click sound
     mouseClick.currentTime = 0;
@@ -88,21 +169,23 @@ function App() {
         return response.json();
       })
       .then(data => {
-        setWeather(data.weather[0].main);
-        setTemp(data.main.temp);
+        // Update all state first
+        const weatherMain = data.weather[0].main;
+        const temperature = data.main.temp;
+        
+        // Update the states
+        setWeather(weatherMain);
+        setTemp(temperature);
         setLocalTime(convertOffsetToLocalTime(data.timezone));
-        // Small delay to ensure state updates before showing bubble
-        setTimeout(() => {
-          getCalciferMessage();
-        }, 100);
+        
+        // Trigger the message update after state is updated
+        setTriggerMessageUpdate(true);
       })
       .catch(err => {
         setError(err.message);
         // Show error message in bubble
-        setTimeout(() => {
-          setCalciferMessage("Hein ? Where is it ?");
-          setIsBubbleVisible(true);
-        }, 100);
+        setCalciferMessage("Hein ? Where is it ?");
+        setIsBubbleVisible(true);
       });
   }
 
@@ -151,45 +234,6 @@ function App() {
     } else {
       return "How may I help you?";
     }
-  }
-
-  const getCalciferMessage = () => {
-    const randomInt = Math.floor(Math.random() * 2);
-    let message = "";
-    
-    if (error === 'City not found or API error') {
-      message = "Hein ? Where is it ?";
-    } else if (weather === 'Clear') {
-      if (temp > 293.15) {
-        message = randomInt === 0 
-          ? "Take off your sunglasses and your shirt!" 
-          : "Perfect beach weather, don't you think?";
-      } else {
-        message = randomInt === 0 
-          ? "Perfect weather for a walk!" 
-          : "Ahhh... I'm feeling great in this clear weather!";
-      }
-    } else if (temp > 293.15) {
-      message = randomInt === 0 
-        ? "Wouhou ! Take off your shirts !" 
-        : "It's so hot, I'm burning up!";
-    } else if (temp < 273.15) {
-      message = randomInt === 0 
-        ? "Brr... It's freezing cold !" 
-        : "I wish I could wear a scarf...";
-    } else if (temp <= 283.15) {
-      message = randomInt === 0 
-        ? "It's kinda cold no ?" 
-        : "I'm shivering !";
-    } else {
-      // Default message for any other case
-      message = randomInt === 0 
-        ? "The weather is interesting today!" 
-        : "What a day for some weather!";
-    }
-    
-    setCalciferMessage(message);
-    setIsBubbleVisible(true);
   }
 
   const getWeatherImage = () => {
@@ -264,8 +308,8 @@ function App() {
           {error && <p id="error">{error}</p>}
             <div id="calcifer">
               <img id="calcifer-img" src={calcifer} alt='Calcifer' />
-              {/* Show sunglasses if it's clear and above 20 degrees */}
-              {(weather === 'Clear' && tempC >= 20) && <img id="sunglasses-img" src={sunglasses} alt='Sunglasses' />}
+              {/* Show sunglasses for hot weather or when typing 'Calcifer' */}
+              {showSunglasses && <img id="sunglasses-img" src={sunglasses} alt='Sunglasses' />}
               <Speechbubble text={calciferMessage} visible={isBubbleVisible}/>
             </div>
             <div id='weather-infos'>
