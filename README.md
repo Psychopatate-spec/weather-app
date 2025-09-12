@@ -1,4 +1,4 @@
-# Weather App
+# Warm Winds
 ================
 
 A simple weather app built with React, using the OpenWeatherMap API.
@@ -35,9 +35,9 @@ A simple weather app built with React, using the OpenWeatherMap API.
 ## Getting Started
 -------------
 
-1. Clone the repository: `git clone https://github.com/your-username/your-repo-name.git`
+1. Clone the repository: `git clone https://github.com/Psychopatate-Spec/weather-app.git`
 2. Install dependencies: `npm install`
-3. Create a new file called `.env` in the root directory and add your OpenWeatherMap API key: `REACT_APP_OPENWEATHERMAP_API_KEY=your-api-key`
+3. Create a new file called `.env` in the root directory and add your OpenWeatherMap API key: `REACT_APP_API_KEY=your-api-key`
 4. Start the app: `npm start`
 
 ## API Keys
