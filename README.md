@@ -24,10 +24,13 @@ A simple weather app built with React, using the OpenWeatherMap API.
 ## Functionalities
 -------------
 
+* Cute Calcifer character presenting the weather
 * Display current weather conditions for a given location
 * Display 5-day weather forecast for a given location
 * Allow user to search for weather by city name or zip code
 * Store user's location preferences in local storage
+
+* (Easter Egg: Try typing "Calcifer" in the search bar!)
 
 ## Getting Started
 -------------
@@ -46,6 +49,5 @@ This app uses the OpenWeatherMap API to fetch weather data. You will need to obt
 ------------
 
 * React
-* Redux
 * OpenWeatherMap API
 * CSS
